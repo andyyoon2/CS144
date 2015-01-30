@@ -241,10 +241,10 @@ class MyParserPrint {
       item.Buy_Price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
       item.First_Bid = strip(getElementTextByTagNameNR(e, "First_Bid"));
       item.Number_of_Bids = getElementTextByTagNameNR(e, "Number_of_Bids");
-      item.Location = getElementTextByTagNameNR(e, "Location").replace(",", "\\,");
+      item.Location = getElementTextByTagNameNR(e, "Location").replace(",", "\\,").replaceAll("\"", "\\\"");
       item.Latitude = getElementByTagNameNR(e, "Location").getAttribute("Latitude");
       item.Longitude = getElementByTagNameNR(e, "Location").getAttribute("Longitude");
-      item.Country = getElementTextByTagNameNR(e, "Country").replace(",", "\\,");
+      item.Country = getElementTextByTagNameNR(e, "Country").replace(",", "\\,").replaceAll("\"", "\\\"");
       item.Started = parse_time(getElementTextByTagNameNR(e, "Started"));
       item.Ends = parse_time(getElementTextByTagNameNR(e, "Ends"));
       item.SellerID = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
@@ -253,7 +253,7 @@ class MyParserPrint {
       if(item.Description.length() > 4000)
         item.Description = item.Description.substring(0, 4000);
 
-      item.Description = item.Description.replace(",", "\\,");
+      item.Description = item.Description.replace(",", "\\,").replaceAll("\"", "\\\"");
 
 
 
@@ -298,7 +298,7 @@ class MyParserPrint {
 
       Category category = new Category();
       category.ItemID = ItemID;
-      category.Name = getElementText(e).replace(",", "\\,");
+      category.Name = getElementText(e).replace(",", "\\,").replaceAll("\"", "\\\"");
 
       categories.put(category.ItemID + category.Name, category);
 
@@ -327,8 +327,8 @@ class MyParserPrint {
       Element bidder = getElementByTagNameNR(e, "Bidder");
       String UserID = bidder.getAttribute("UserID");
       String BidderRating = bidder.getAttribute("Rating");
-      String Location = getElementTextByTagNameNR(bidder, "Location").replace(",", "\\,");
-      String Country = getElementTextByTagNameNR(bidder, "Country").replace(",", "\\,");
+      String Location = getElementTextByTagNameNR(bidder, "Location").replace(",", "\\,").replaceAll("\"", "\\\"");
+      String Country = getElementTextByTagNameNR(bidder, "Country").replace(",", "\\,").replaceAll("\"", "\\\"");
       String Time = parse_time(getElementTextByTagNameNR(e, "Time"));
       String Amount = strip(getElementTextByTagNameNR(e, "Amount"));
 

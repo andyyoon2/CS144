@@ -2,8 +2,8 @@ CREATE TABLE Users(
   id VARCHAR(100) NOT NULL PRIMARY KEY,
   Location VARCHAR(100),
   Country VARCHAR(100),
-  BidderRating INT DEFAULT 0,
-  SellerRating INT DEFAULT 0
+  BidderRating INT,
+  SellerRating INT
 ) ENGINE = InnoDB;
 
 CREATE TABLE Items(
@@ -20,25 +20,17 @@ CREATE TABLE Items(
   Started TIMESTAMP NOT NULL,
   Ends TIMESTAMP NOT NULL,
   SellerID VARCHAR(100) NOT NULL,
-  FOREIGN KEY (SellerID)
-    REFERENCES Users(id),
   Description VARCHAR(4000)
 ) ENGINE = InnoDB;
 
 CREATE TABLE Categories(
   ItemID INT NOT NULL,
-  FOREIGN KEY (ItemID)
-    REFERENCES Items(id),
   Name VARCHAR(100) NOT NULL
 ) ENGINE = InnoDB;
 
 CREATE TABLE Bids(
   ItemID INT NOT NULL,
-  FOREIGN KEY (ItemID)
-    REFERENCES Items(id),
   UserID VARCHAR(100) NOT NULL,
-  FOREIGN KEY (UserID)
-    REFERENCES Users(id),
   Time TIMESTAMP NOT NULL,
   Amount DECIMAL(8,2) NOT NULL
 ) ENGINE = InnoDB;
