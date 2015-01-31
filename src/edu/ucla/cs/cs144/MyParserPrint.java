@@ -436,7 +436,7 @@ class MyParserPrint {
           PrintWriter writer = new PrintWriter("items.dat", "UTF-8");
 
           for(Item item : items.values()){
-            String line = String.format("%s, \"%s\", %s, %s, %s, %s, \"%s\", %s, %s, \"%s\", %s, %s, \"%s\", \"%s\"",
+            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\"",
                                         item.id, item.Name, item.Currently, item.Buy_Price, item.First_Bid,
                                         item.Number_of_Bids, item.Location, item.Latitude, item.Longitude,
                                         item.Country, item.Started, item.Ends, item.SellerID, item.Description);
@@ -447,7 +447,7 @@ class MyParserPrint {
           //categories
           writer = new PrintWriter("categories.dat", "UTF-8");
           for(Category category : categories.values()){
-            String line = String.format("%s, \"%s\"", category.ItemID, category.Name);
+            String line = String.format("\"%s\", \"%s\"", category.ItemID, category.Name);
             writer.println(line);
           }
           writer.close();
@@ -456,7 +456,7 @@ class MyParserPrint {
           //bids
           writer = new PrintWriter("bids.dat", "UTF-8");
           for(Bid bid : bids.values()){
-            String line = String.format("%s, \"%s\", %s, %s", bid.ItemID, bid.UserID, bid.Time, bid.Amount);
+            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\"", bid.ItemID, bid.UserID, bid.Time, bid.Amount);
             writer.println(line);
           }
           writer.close();
@@ -465,7 +465,7 @@ class MyParserPrint {
           //users
           writer = new PrintWriter("users.dat", "UTF-8");
           for(User user : users.values()){
-            String line = String.format("%s, \"%s\", \"%s\", %s, %s", user.id, user.Location, user.Country,
+            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"", user.id, user.Location, user.Country,
                                                                       user.BidderRating, user.SellerRating);
             writer.println(line);
           }
