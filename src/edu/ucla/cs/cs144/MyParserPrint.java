@@ -252,9 +252,8 @@ class MyParserPrint {
 
       if(item.Description.length() > 4000)
         item.Description = item.Description.substring(0, 4000);
-
-
-
+      if (item.Description.endsWith("\\"))
+          item.Description = item.Description.substring(0,item.Description.length()-1);
 
 
       String SellerRating = getElementByTagNameNR(e, "Seller").getAttribute("Rating");
