@@ -241,10 +241,10 @@ class MyParserPrint {
       item.Buy_Price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
       item.First_Bid = strip(getElementTextByTagNameNR(e, "First_Bid"));
       item.Number_of_Bids = getElementTextByTagNameNR(e, "Number_of_Bids");
-      item.Location = getElementTextByTagNameNR(e, "Location");
+      item.Location = getElementTextByTagNameNR(e, "Location").replace(",", "\\,");
       item.Latitude = getElementByTagNameNR(e, "Location").getAttribute("Latitude");
       item.Longitude = getElementByTagNameNR(e, "Location").getAttribute("Longitude");
-      item.Country = getElementTextByTagNameNR(e, "Country");
+      item.Country = getElementTextByTagNameNR(e, "Country").replace(",", "\\,");
       item.Started = parse_time(getElementTextByTagNameNR(e, "Started"));
       item.Ends = parse_time(getElementTextByTagNameNR(e, "Ends"));
       item.SellerID = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
@@ -252,6 +252,8 @@ class MyParserPrint {
 
       if(item.Description.length() > 4000)
         item.Description = item.Description.substring(0, 4000);
+
+      item.Description = item.Description.replace(",", "\\,");
 
 
 
@@ -296,7 +298,7 @@ class MyParserPrint {
 
       Category category = new Category();
       category.ItemID = ItemID;
-      category.Name = getElementText(e);
+      category.Name = getElementText(e).replace(",", "\\,");
 
       categories.put(category.ItemID + category.Name, category);
 
@@ -325,8 +327,8 @@ class MyParserPrint {
       Element bidder = getElementByTagNameNR(e, "Bidder");
       String UserID = bidder.getAttribute("UserID");
       String BidderRating = bidder.getAttribute("Rating");
-      String Location = getElementTextByTagNameNR(bidder, "Location");
-      String Country = getElementTextByTagNameNR(bidder, "Country");
+      String Location = getElementTextByTagNameNR(bidder, "Location").replace(",", "\\,");
+      String Country = getElementTextByTagNameNR(bidder, "Country").replace(",", "\\,");
       String Time = parse_time(getElementTextByTagNameNR(e, "Time"));
       String Amount = strip(getElementTextByTagNameNR(e, "Amount"));
 
@@ -436,7 +438,7 @@ class MyParserPrint {
           PrintWriter writer = new PrintWriter("items.dat", "UTF-8");
 
           for(Item item : items.values()){
-            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\"",
+            String line = String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"",
                                         item.id, item.Name, item.Currently, item.Buy_Price, item.First_Bid,
                                         item.Number_of_Bids, item.Location, item.Latitude, item.Longitude,
                                         item.Country, item.Started, item.Ends, item.SellerID, item.Description);
@@ -447,7 +449,7 @@ class MyParserPrint {
           //categories
           writer = new PrintWriter("categories.dat", "UTF-8");
           for(Category category : categories.values()){
-            String line = String.format("\"%s\", \"%s\"", category.ItemID, category.Name);
+            String line = String.format("\"%s\",\"%s\"", category.ItemID, category.Name);
             writer.println(line);
           }
           writer.close();
@@ -456,7 +458,7 @@ class MyParserPrint {
           //bids
           writer = new PrintWriter("bids.dat", "UTF-8");
           for(Bid bid : bids.values()){
-            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\"", bid.ItemID, bid.UserID, bid.Time, bid.Amount);
+            String line = String.format("\"%s\",\"%s\",\"%s\",\"%s\"", bid.ItemID, bid.UserID, bid.Time, bid.Amount);
             writer.println(line);
           }
           writer.close();
@@ -473,7 +475,7 @@ class MyParserPrint {
               user.BidderRating = "0";
             if(user.SellerRating == null)
               user.SellerRating = "0";
-            String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"", user.id, user.Location, user.Country,
+            String line = String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", user.id, user.Location, user.Country,
                                                                       user.BidderRating, user.SellerRating);
             writer.println(line);
           }
