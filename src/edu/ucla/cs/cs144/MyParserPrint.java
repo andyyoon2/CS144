@@ -34,6 +34,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
@@ -41,11 +42,34 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 
 
+
+// Item Struct
+class Item {
+  public String id, Name, Currently, Buy_Price, First_Bid, Number_of_Bids,
+                Location, Latitude, Longitude, Country, Started, Ends, SellerID,
+                Description;
+}
+
+// Category Struct
+class Category {
+  public String ItemID, Name;
+}
+
+// Bid Struct
+class Bid {
+  public String ItemID, UserID, Time, Amount;
+}
+
+// User Struct
+class User {
+  public String id, Location, Country, BidderRating, SellerRating;
+}
+
 class MyParserPrint {
-    
+
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
-    
+
     static final String[] typeName = {
 	"none",
 	"Element",
@@ -61,19 +85,19 @@ class MyParserPrint {
 	"DocFragment",
 	"Notation",
     };
-    
+
     static class MyErrorHandler implements ErrorHandler {
-        
+
         public void warning(SAXParseException exception)
         throws SAXException {
             fatalError(exception);
         }
-        
+
         public void error(SAXParseException exception)
         throws SAXException {
             fatalError(exception);
         }
-        
+
         public void fatalError(SAXParseException exception)
         throws SAXException {
             exception.printStackTrace();
@@ -81,9 +105,9 @@ class MyParserPrint {
                                "in the supplied XML files.");
             System.exit(3);
         }
-        
+
     }
-    
+
     /* Non-recursive (NR) version of Node.getElementsByTagName(...)
      */
     static Element[] getElementsByTagNameNR(Element e, String tagName) {
@@ -100,7 +124,7 @@ class MyParserPrint {
         elements.copyInto(result);
         return result;
     }
-    
+
     /* Returns the first subelement of e matching the given tagName, or
      * null if one does not exist. NR means Non-Recursive.
      */
@@ -113,7 +137,7 @@ class MyParserPrint {
         }
         return null;
     }
-    
+
     /* Returns the text associated with the given element (which must have
      * type #PCDATA) as child, or "" if it contains no text.
      */
@@ -125,7 +149,7 @@ class MyParserPrint {
         else
             return "";
     }
-    
+
     /* Returns the text (#PCDATA) associated with the first subelement X
      * of e with the given tagName. If no such X exists or X contains no
      * text, "" is returned. NR means Non-Recursive.
@@ -137,7 +161,7 @@ class MyParserPrint {
         else
             return "";
     }
-    
+
     /* Returns the amount (in XXXXX.xx format) denoted by a money-string
      * like $3,453.23. Returns the input if the input is an empty string.
      */
@@ -157,7 +181,7 @@ class MyParserPrint {
             return nf.format(am).substring(1);
         }
     }
-    
+
     /* Process one items-???.xml file.
      */
     static void processFile(File xmlFile) {
@@ -175,68 +199,205 @@ class MyParserPrint {
             e.printStackTrace();
             System.exit(3);
         }
-        
+
         /* At this point 'doc' contains a DOM representation of an 'Items' XML
          * file. Use doc.getDocumentElement() to get the root Element. */
         System.out.println("Successfully parsed - " + xmlFile);
-        
+
         /* Fill in code here (you will probably need to write auxiliary
             methods). */
-        
-        
+
+        //Create HashMaps for us to write structs into to be processed later
+        Map<String, Item> items = new HashMap<String, Item>();
+        Map<String, Category> categories = new HashMap<String, Category>();
+        Map<String, Bid> bids = new HashMap<String, Bid>();
+        Map<String, User> users = new HashMap<String, User>();
+
+        parseItems(doc.getElementsByTagName("Item"), items, categories, bids, users);
+
         /**************************************************************/
-        
-        recursiveDescent(doc, 0);
+
+        //recursiveDescent(doc, 0);
+
     }
-    
+
+
+    public static void parseItems(NodeList nlist, Map<String, Item> items, Map<String, Category> categories,
+                                  Map<String, Bid> bids, Map<String, User> users) {
+
+      for(int i=0; i<nlist.getLength(); i++){
+        parseItem(nlist.item(i), items, categories, bids, users);
+      }
+
+    }
+
+    public static void parseItem(Node n,  Map<String, Item> items, Map<String, Category> categories,
+                                  Map<String, Bid> bids, Map<String, User> users) {
+
+      Element e = (Element)n;
+      Item item= new Item();
+
+      item.id = e.getAttribute("ItemID");
+      item.Name = getElementTextByTagNameNR(e, "Name");
+      item.Currently = getElementTextByTagNameNR(e, "Currently");
+      item.Buy_Price = getElementTextByTagNameNR(e, "Buy_Price");
+      item.First_Bid = getElementTextByTagNameNR(e, "First_Bid");
+      item.Number_of_Bids = getElementTextByTagNameNR(e, "Number_of_Bids");
+      item.Location = getElementTextByTagNameNR(e, "Location");
+      item.Latitude = getElementByTagNameNR(e, "Location").getAttribute("Latitude");
+      item.Longitude = getElementByTagNameNR(e, "Location").getAttribute("Longitude");
+      item.Country = getElementTextByTagNameNR(e, "Country");
+      item.Started = getElementTextByTagNameNR(e, "Started");
+      item.Ends = getElementTextByTagNameNR(e, "Ends");
+      item.SellerID = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
+      item.Description = getElementTextByTagNameNR(e, "Description");
+
+
+      String SellerRating = getElementByTagNameNR(e, "Seller").getAttribute("Rating");
+
+
+      System.out.println(item.id + ", " + item.Name + ", " + item.Currently + ", " + item.Buy_Price + ", " +
+                         item.First_Bid + ", " + item.Number_of_Bids + ", " + item.Location + ", " +
+                         item.Latitude + ", " + item.Longitude + ", " + item.SellerID + ", " +
+                         item.Country + ", " + item.Started + ", " + item.Ends + ", " + item.Description);
+
+
+      // Categories processing
+      Element[] category_elements = getElementsByTagNameNR(e, "Category");
+
+      for(int i = 0; i < category_elements.length; i++) {
+        parseCategory(category_elements[i], item.id, categories);
+      }
+
+      // Seller Processing
+      parseSeller(item.SellerID, SellerRating, users);
+
+      // Bids Processing
+      Element[] bid_elements = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
+
+      for(int i = 0; i < bid_elements.length; i++) {
+        parseBid(bid_elements[i], item.id, bids, users);
+      }
+
+      //org.w3c.dom.NodeList nlist = n.getChildNodes();
+
+      //for(int i=0; i<nlist.getLength(); i++){
+       // recursiveDescent(nlist.item(i), 0);
+      //}
+    }
+
+
+    public static void parseCategory(Element e, String ItemID, Map<String, Category> categories) {
+
+      Category category = new Category();
+      category.ItemID = ItemID;
+      category.Name = getElementText(e);
+
+      categories.put(category.ItemID + category.Name, category);
+
+      System.out.println("Category: " + category.ItemID + " " + category.Name);
+    }
+
+
+    public static void parseSeller(String UserID, String SellerRating, Map<String, User> users) {
+
+      User user = users.get(UserID);
+      if(user == null) {
+        user = new User();
+        user.id = UserID;
+      }
+
+      user.SellerRating = SellerRating;
+
+      users.put(UserID, user);
+
+      System.out.println("Seller: " + user.id + " " + user.SellerRating);
+
+    }
+
+    public static void parseBid(Element e, String ItemID, Map<String, Bid> bids, Map<String, User> users){
+
+      Element bidder = getElementByTagNameNR(e, "Bidder");
+      String UserID = bidder.getAttribute("UserID");
+      String BidderRating = bidder.getAttribute("Rating");
+      String Location = getElementTextByTagNameNR(bidder, "Location");
+      String Country = getElementTextByTagNameNR(bidder, "Country");
+      String Time = getElementTextByTagNameNR(e, "Time");
+      String Amount = getElementTextByTagNameNR(e, "Amount");
+
+      Bid bid = new Bid();
+      bid.ItemID = ItemID;
+      bid.UserID = UserID;
+      bid.Time = Time;
+      bid.Amount = Amount;
+
+      bids.put(ItemID + UserID + Time, bid);
+
+      User user = users.get(UserID);
+      if (user == null){
+        user = new User();
+        user.id = UserID;
+      }
+
+      user.BidderRating = BidderRating;
+      user.Location = Location;
+      user.Country = Country;
+
+      users.put(UserID, user);
+
+      System.out.println("Bidder: " + bid.UserID + " " + bid.Time + " " + bid.Amount);
+      System.out.println("User: " + user.id + " " + user.Location + " " + user.Country + " " + user.BidderRating);
+
+    }
+
     public static void recursiveDescent(Node n, int level) {
         // adjust indentation according to level
         for(int i=0; i<4*level; i++)
             System.out.print(" ");
-        
-        // dump out node name, type, and value  
+
+        // dump out node name, type, and value
         String ntype = typeName[n.getNodeType()];
         String nname = n.getNodeName();
         String nvalue = n.getNodeValue();
-        
+
         System.out.println("Type = " + ntype + ", Name = " + nname + ", Value = " + nvalue);
-        
+
         // dump out attributes if any
         org.w3c.dom.NamedNodeMap nattrib = n.getAttributes();
         if(nattrib != null && nattrib.getLength() > 0)
             for(int i=0; i<nattrib.getLength(); i++)
                 recursiveDescent(nattrib.item(i),  level+1);
-        
+
         // now walk through its children list
         org.w3c.dom.NodeList nlist = n.getChildNodes();
-        
+
         for(int i=0; i<nlist.getLength(); i++)
             recursiveDescent(nlist.item(i), level+1);
-    }  
-    
+    }
+
     public static void main (String[] args) {
         if (args.length == 0) {
             System.out.println("Usage: java MyParser [file] [file] ...");
             System.exit(1);
         }
-        
+
         /* Initialize parser. */
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
-            factory.setIgnoringElementContentWhitespace(true);      
+            factory.setIgnoringElementContentWhitespace(true);
             builder = factory.newDocumentBuilder();
             builder.setErrorHandler(new MyErrorHandler());
         }
         catch (FactoryConfigurationError e) {
             System.out.println("unable to get a document builder factory");
             System.exit(2);
-        } 
+        }
         catch (ParserConfigurationException e) {
             System.out.println("parser was unable to be configured");
             System.exit(2);
         }
-        
+
         /* Process all files listed on command line. */
         for (int i = 0; i < args.length; i++) {
             File currentFile = new File(args[i]);
