@@ -258,12 +258,14 @@ class MyParserPrint {
 
       String SellerRating = getElementByTagNameNR(e, "Seller").getAttribute("Rating");
 
-
+      /*
       System.out.println(item.id + ", " + item.Name + ", " + item.Currently + ", " + item.Buy_Price + ", " +
                          item.First_Bid + ", " + item.Number_of_Bids + ", " + item.Location + ", " +
                          item.Latitude + ", " + item.Longitude + ", " + item.SellerID + ", " +
                          item.Country + ", " + item.Started + ", " + item.Ends + ", " + item.Description);
+      */
 
+      items.put(item.id, item);
 
       // Categories processing
       Element[] category_elements = getElementsByTagNameNR(e, "Category");
@@ -298,7 +300,7 @@ class MyParserPrint {
 
       categories.put(category.ItemID + category.Name, category);
 
-      System.out.println("Category: " + category.ItemID + " " + category.Name);
+      //System.out.println("Category: " + category.ItemID + " " + category.Name);
     }
 
 
@@ -314,7 +316,7 @@ class MyParserPrint {
 
       users.put(UserID, user);
 
-      System.out.println("Seller: " + user.id + " " + user.SellerRating);
+      //System.out.println("Seller: " + user.id + " " + user.SellerRating);
 
     }
 
@@ -348,8 +350,8 @@ class MyParserPrint {
 
       users.put(UserID, user);
 
-      System.out.println("Bidder: " + bid.UserID + " " + bid.Time + " " + bid.Amount);
-      System.out.println("User: " + user.id + " " + user.Location + " " + user.Country + " " + user.BidderRating);
+      //System.out.println("Bidder: " + bid.UserID + " " + bid.Time + " " + bid.Amount);
+      //System.out.println("User: " + user.id + " " + user.Location + " " + user.Country + " " + user.BidderRating);
 
     }
 
@@ -360,7 +362,6 @@ class MyParserPrint {
         SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String parsed_time = sqldf.format(date);
 
-        System.out.println(parsed_time);
         return parsed_time;
       }
       catch (Exception e) {
@@ -429,8 +430,50 @@ class MyParserPrint {
             processFile(currentFile, items, categories, bids, users);
         }
 
-
         // Parse all of our HashMaps and output them to some files
+        try {
+          //items
+          PrintWriter writer = new PrintWriter("items.dat", "UTF-8");
 
+          for(Item item : items.values()){
+            String line = String.format("%s, \"%s\", %s, %s, %s, %s, \"%s\", %s, %s, \"%s\", %s, %s, \"%s\", \"%s\"",
+                                        item.id, item.Name, item.Currently, item.Buy_Price, item.First_Bid,
+                                        item.Number_of_Bids, item.Location, item.Latitude, item.Longitude,
+                                        item.Country, item.Started, item.Ends, item.SellerID, item.Description);
+            writer.println(line);
+          }
+          writer.close();
+
+          //categories
+          writer = new PrintWriter("categories.dat", "UTF-8");
+          for(Category category : categories.values()){
+            String line = String.format("%s, \"%s\"", category.ItemID, category.Name);
+            writer.println(line);
+          }
+          writer.close();
+
+
+          //bids
+          writer = new PrintWriter("bids.dat", "UTF-8");
+          for(Bid bid : bids.values()){
+            String line = String.format("%s, \"%s\", %s, %s", bid.ItemID, bid.UserID, bid.Time, bid.Amount);
+            writer.println(line);
+          }
+          writer.close();
+
+
+          //users
+          writer = new PrintWriter("users.dat", "UTF-8");
+          for(User user : users.values()){
+            String line = String.format("%s, \"%s\", \"%s\", %s, %s", user.id, user.Location, user.Country,
+                                                                      user.BidderRating, user.SellerRating);
+            writer.println(line);
+          }
+          writer.close();
+
+      }
+      catch (Exception e){
+        e.printStackTrace();
+      }
     }
 }
