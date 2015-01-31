@@ -41,6 +41,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 // Item Struct
@@ -184,7 +187,8 @@ class MyParserPrint {
 
     /* Process one items-???.xml file.
      */
-    static void processFile(File xmlFile) {
+    static void processFile(File xmlFile, Map<String, Item> items, Map<String, Category> categories,
+                            Map<String, Bid> bids, Map<String, User> users) {
         Document doc = null;
         try {
             doc = builder.parse(xmlFile);
@@ -206,12 +210,6 @@ class MyParserPrint {
 
         /* Fill in code here (you will probably need to write auxiliary
             methods). */
-
-        //Create HashMaps for us to write structs into to be processed later
-        Map<String, Item> items = new HashMap<String, Item>();
-        Map<String, Category> categories = new HashMap<String, Category>();
-        Map<String, Bid> bids = new HashMap<String, Bid>();
-        Map<String, User> users = new HashMap<String, User>();
 
         parseItems(doc.getElementsByTagName("Item"), items, categories, bids, users);
 
@@ -239,18 +237,23 @@ class MyParserPrint {
 
       item.id = e.getAttribute("ItemID");
       item.Name = getElementTextByTagNameNR(e, "Name");
-      item.Currently = getElementTextByTagNameNR(e, "Currently");
-      item.Buy_Price = getElementTextByTagNameNR(e, "Buy_Price");
-      item.First_Bid = getElementTextByTagNameNR(e, "First_Bid");
+      item.Currently = strip(getElementTextByTagNameNR(e, "Currently"));
+      item.Buy_Price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
+      item.First_Bid = strip(getElementTextByTagNameNR(e, "First_Bid"));
       item.Number_of_Bids = getElementTextByTagNameNR(e, "Number_of_Bids");
       item.Location = getElementTextByTagNameNR(e, "Location");
       item.Latitude = getElementByTagNameNR(e, "Location").getAttribute("Latitude");
       item.Longitude = getElementByTagNameNR(e, "Location").getAttribute("Longitude");
       item.Country = getElementTextByTagNameNR(e, "Country");
-      item.Started = getElementTextByTagNameNR(e, "Started");
-      item.Ends = getElementTextByTagNameNR(e, "Ends");
+      item.Started = parse_time(getElementTextByTagNameNR(e, "Started"));
+      item.Ends = parse_time(getElementTextByTagNameNR(e, "Ends"));
       item.SellerID = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
       item.Description = getElementTextByTagNameNR(e, "Description");
+
+      if(item.Description.length() > 4000)
+        item.Description = item.Description.substring(0, 4000);
+
+
 
 
       String SellerRating = getElementByTagNameNR(e, "Seller").getAttribute("Rating");
@@ -322,8 +325,8 @@ class MyParserPrint {
       String BidderRating = bidder.getAttribute("Rating");
       String Location = getElementTextByTagNameNR(bidder, "Location");
       String Country = getElementTextByTagNameNR(bidder, "Country");
-      String Time = getElementTextByTagNameNR(e, "Time");
-      String Amount = getElementTextByTagNameNR(e, "Amount");
+      String Time = parse_time(getElementTextByTagNameNR(e, "Time"));
+      String Amount = strip(getElementTextByTagNameNR(e, "Amount"));
 
       Bid bid = new Bid();
       bid.ItemID = ItemID;
@@ -349,6 +352,22 @@ class MyParserPrint {
       System.out.println("User: " + user.id + " " + user.Location + " " + user.Country + " " + user.BidderRating);
 
     }
+
+    public static String parse_time(String time_string){
+      try {
+        Date date = new Date(time_string);
+
+        SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String parsed_time = sqldf.format(date);
+
+        System.out.println(parsed_time);
+        return parsed_time;
+      }
+      catch (Exception e) {
+        return "";
+      }
+    }
+
 
     public static void recursiveDescent(Node n, int level) {
         // adjust indentation according to level
@@ -398,10 +417,20 @@ class MyParserPrint {
             System.exit(2);
         }
 
+        // Create HashMaps for us to write structs into to be processed later
+        Map<String, Item> items = new HashMap<String, Item>();
+        Map<String, Category> categories = new HashMap<String, Category>();
+        Map<String, Bid> bids = new HashMap<String, Bid>();
+        Map<String, User> users = new HashMap<String, User>();
+
         /* Process all files listed on command line. */
         for (int i = 0; i < args.length; i++) {
             File currentFile = new File(args[i]);
-            processFile(currentFile);
+            processFile(currentFile, items, categories, bids, users);
         }
+
+
+        // Parse all of our HashMaps and output them to some files
+
     }
 }
