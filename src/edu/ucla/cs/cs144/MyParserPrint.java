@@ -465,6 +465,14 @@ class MyParserPrint {
           //users
           writer = new PrintWriter("users.dat", "UTF-8");
           for(User user : users.values()){
+            if(user.Location == null)
+              user.Location = "";
+            if(user.Country == null)
+              user.Country = "";
+            if(user.BidderRating == null)
+              user.BidderRating = "0";
+            if(user.SellerRating == null)
+              user.SellerRating = "0";
             String line = String.format("\"%s\", \"%s\", \"%s\", \"%s\", \"%s\"", user.id, user.Location, user.Country,
                                                                       user.BidderRating, user.SellerRating);
             writer.println(line);
