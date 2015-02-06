@@ -32,10 +32,11 @@ import org.apache.lucene.util.Version;
 import edu.ucla.cs.cs144.DbManager;
 import edu.ucla.cs.cs144.SearchRegion;
 import edu.ucla.cs.cs144.SearchResult;
+import edu.ucla.cs.cs144.SearchEngine;
 
 public class AuctionSearch implements IAuctionSearch {
 
-	/* 
+	/*
          * You will probably have to use JDBC to access MySQL data
          * Lucene IndexSearcher class to lookup Lucene index.
          * Read the corresponding tutorial to learn about how to use these.
@@ -49,11 +50,28 @@ public class AuctionSearch implements IAuctionSearch {
          * placed at src/edu/ucla/cs/cs144.
          *
          */
-	
-	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
+
+	public SearchResult[] basicSearch(String query, int numResultsToSkip,
 			int numResultsToReturn) {
-		// TODO: Your code here!
-		return new SearchResult[0];
+    try{
+      SearchEngine se = new SearchEngine();
+      TopDocs topDocs = se.performSearch(query, numResultsToReturn + numResultsToSkip);
+      ScoreDoc[] hits = topDocs.scoreDocs;
+
+      ArrayList<SearchResult> results = new ArrayList<SearchResult>();
+      for (int i = numResultsToSkip; i < hits.length; i++){
+        Document doc = se.getDocument(hits[i].doc);
+        results.add(new SearchResult(doc.get("id"), doc.get("name")));
+      }
+
+      return results.toArray(new SearchResult[results.size()]);
+    } catch (IOException e) {
+      System.out.println(e);
+      return new SearchResult[1];
+    } catch (ParseException e) {
+      System.out.println(e);
+      return new SearchResult[1];
+    }
 	}
 
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
@@ -66,7 +84,7 @@ public class AuctionSearch implements IAuctionSearch {
 		// TODO: Your code here!
 		return "";
 	}
-	
+
 	public String echo(String message) {
 		return message;
 	}
