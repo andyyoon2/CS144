@@ -1,0 +1,4 @@
+SELECT ItemId, GROUP_CONCAT(Name SEPARATOR ' ') as Category FROM Categories GROUP BY ItemId;
+
+
+SELECT id, Name as name, CONCAT(Name, ' ', Category, ' ', Description) as keywords FROM Items as i, (SELECT ItemId, GROUP_CONCAT(Name SEPARATOR ' ') as Category FROM Categories GROUP BY ItemId) as c WHERE i.id = c.ItemId;
