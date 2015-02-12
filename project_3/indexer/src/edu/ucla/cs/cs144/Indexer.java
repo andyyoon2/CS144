@@ -30,9 +30,29 @@ public class Indexer {
 
     private IndexWriter indexWriter = null;
 
+    // http://stackoverflow.com/questions/12835285/create-directory-if-exists-delete-directory-and-its-content-and-create-new-one
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
+    }
+
     public IndexWriter getIndexWriter(boolean create) throws IOException {
         if (indexWriter == null) {
-            Directory indexDir = FSDirectory.open(new File("/var/lib/lucene/index-items-name-categories-description"));
+            File indexFile = new File("/var/lib/lucene/index-items-name-categories-description");
+            try {
+                deleteDir(indexFile);
+            } catch (Exception e) {
+                System.out.println("Unable to delete previous index directory");
+            }
+            Directory indexDir = FSDirectory.open(indexFile);
             IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_10_2, new StandardAnalyzer());
             indexWriter = new IndexWriter(indexDir, config);
         }
@@ -94,7 +114,7 @@ public class Indexer {
                 id = rs.getInt("id");
                 name = rs.getString("name");
                 keywords = rs.getString("keywords");
-                System.out.println(id + ": " + name);
+                //System.out.println(id + ": " + name);
 
                 Document doc = new Document();
                 doc.add(new StringField("id", Integer.toString(id), Field.Store.YES));
