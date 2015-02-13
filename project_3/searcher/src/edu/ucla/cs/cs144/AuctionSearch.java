@@ -144,6 +144,7 @@ class User {
     Item item = new Item();
     ArrayList<String> categories;
     ArrayList<Bid> bids;
+    int SellerRating = 0;
     try {
       // Retrieve the item from DB
       Connection conn = DbManager.getConnection(true);
@@ -160,8 +161,8 @@ class User {
         item.First_Bid = rs.getDouble("First_Bid");
         item.Number_of_Bids = rs.getInt("Number_of_Bids");
         item.Location = rs.getString("Name");
-        item.Latitude = rs.getDouble("Buy_Price");
-        item.Longitude = rs.getDouble("Buy_Price");
+        item.Latitude = rs.getDouble("Latitude");
+        item.Longitude = rs.getDouble("Longitude");
         item.Country = rs.getString("Country");
         item.Started = rs.getTimestamp("Started");
         item.Ends = rs.getTimestamp("Ends");
@@ -171,6 +172,14 @@ class User {
         return "";
       }
       // Get related data
+      // SellerRating
+      query = "SELECT SellerRating FROM Users WHERE id = ?;";
+      ps = conn.prepareStatement(query);
+      ps.setString(1, item.SellerID);
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        SellerRating = rs.getInt("SellerRating");
+      }
       // Categories
       query = "SELECT * FROM Categories WHERE ItemID = ?;";
       ps = conn.prepareStatement(query);
@@ -202,7 +211,11 @@ class User {
       return "";
     }
 
-    DecimalFormat df = new DecimalFormat("#.00");
+    // formatters for doubles and dates
+    DecimalFormat price_format = new DecimalFormat("#.00");
+    DecimalFormat location_format = new DecimalFormat("#.000000");
+    SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat date_format = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
 
     // Populate the XML
 		String xml = "<Item ItemID=\"" + Integer.toString(item.id) + "\">\n";
@@ -210,31 +223,45 @@ class User {
     for (String c : categories) {
       xml += "\t<Category>" + c + "</Category>\n";
     }
-    xml += "\t<Currently>$" + Double.toString(item.Currently) + "</Currently>\n";
+    xml += "\t<Currently>$" + price_format.format(item.Currently) + "</Currently>\n";
     if (item.Buy_Price != 0.0) {
-      xml += "\t<Buy_Price>$" + Double.toString(item.Buy_Price) + "</Buy_Price>\n";
+      xml += "\t<Buy_Price>$" + price_format.format(item.Buy_Price) + "</Buy_Price>\n";
     }
-    xml += "\t<First_Bid>$" + Double.toString(item.First_Bid) + "</First_Bid>\n";
+    xml += "\t<First_Bid>$" + price_format.format(item.First_Bid) + "</First_Bid>\n";
     xml += "\t<Number_of_Bids>" + Integer.toString(item.Number_of_Bids) + "</Number_of_Bids>\n";
     if (item.Number_of_Bids == 0) {
       xml += "\t<Bids />\n";
     } else {
       xml += "\t<Bids>\n";
+      // NOTE(JL): Do we need to output these in ascending order by bid amount?
+      // Techincally we don't have to and we will still adhere to the DTD
       for (Bid b : bids) {
         xml += "\t\t<Bid>\n";
         xml += "\t\t\t<Bidder Rating=\"" + Integer.toString(b.BidderRating) + "\" UserID=\"" + b.UserID + "\">\n";
         xml += "\t\t\t\t<Location>" + b.Location + "</Location>\n";
         xml += "\t\t\t\t<Country>" + b.Country + "</Country>\n";
-        xml += "\t\t\t<Time>" + "</Time>\n";
-        xml += "\t\t\t<Amount>$" + df.format(b.Amount) + "</Amount>\n";
+        try {
+          xml += "\t\t\t<Time>" + date_format.format(sqldf.parse(b.Time.toString())) + "</Time>\n";
+        } catch (Exception e) {
+          return "Failed to parse Time";
+        }
+        xml += "\t\t\t<Amount>$" + price_format.format(b.Amount) + "</Amount>\n";
         xml += "\t\t</Bid>\n";
       }
+      xml += "\t</Bids>\n";
     }
-    /* TODO:
-     * Finish fields
-     * Doubles: 2 places precision ($24.90 instead of $24.9)
-     * Converting Timestamp fields
-     */
+    xml += "\t<Location Latitude=\"" + location_format.format(item.Latitude) + "\" Longitude=\"" + location_format.format(item.Longitude)
+         + "\">"+ item.Location + "</Location>\n";
+    xml += "\t<Country>" + item.Country + "</Country>\n";
+    try {
+      xml += "\t<Started>" + date_format.format(sqldf.parse(item.Started.toString())) + "</Started>\n";
+      xml += "\t<Ends>" + date_format.format(sqldf.parse(item.Ends.toString())) + "</Ends>\n";
+    } catch (Exception e) {
+      return "Failed to parse Time";
+    }
+    xml += "<Seller Rating=\"" + SellerRating + "\" UserID=\"" + item.SellerID + "\" />\n";
+    xml += "<Description>" + item.Description + "</Description>\n";
+    xml += "</Item>";
 
     return xml;
 	}
