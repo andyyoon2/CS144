@@ -212,8 +212,8 @@ class User {
     }
 
     // formatters for doubles and dates
-    DecimalFormat price_format = new DecimalFormat("#.00");
-    DecimalFormat location_format = new DecimalFormat("#.000000");
+    DecimalFormat price_format = new DecimalFormat("#0.00");
+    DecimalFormat location_format = new DecimalFormat("#0.000000");
     SimpleDateFormat sqldf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat date_format = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
 
