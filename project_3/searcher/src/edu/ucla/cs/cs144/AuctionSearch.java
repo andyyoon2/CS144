@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -201,6 +202,8 @@ class User {
       return "";
     }
 
+    DecimalFormat df = new DecimalFormat("#.00");
+
     // Populate the XML
 		String xml = "<Item ItemID=\"" + Integer.toString(item.id) + "\">\n";
     xml += "\t<Name>" + item.Name + "</Name>\n";
@@ -223,7 +226,7 @@ class User {
         xml += "\t\t\t\t<Location>" + b.Location + "</Location>\n";
         xml += "\t\t\t\t<Country>" + b.Country + "</Country>\n";
         xml += "\t\t\t<Time>" + "</Time>\n";
-        xml += "\t\t\t<Amount>$" + Double.toString(b.Amount) + "</Amount>\n";
+        xml += "\t\t\t<Amount>$" + df.format(b.Amount) + "</Amount>\n";
         xml += "\t\t</Bid>\n";
       }
     }
