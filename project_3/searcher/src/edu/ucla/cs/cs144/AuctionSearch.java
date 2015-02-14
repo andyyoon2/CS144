@@ -133,12 +133,6 @@ class Bid {
   public Timestamp Time;
   public double Amount;
 }
-/*
-// User Struct
-class User {
-  public String id, Location, Country;
-  public int BidderRating, SellerRating;
-}*/
 
 	public String getXMLDataForItemId(String itemId) {
     Item item = new Item();
@@ -191,7 +185,8 @@ class User {
       }
       // Bids
       query = "SELECT b.UserID,b.Time,b.Amount,u.Location,u.Country,u.BidderRating " +
-              "FROM Bids b, Users u WHERE b.ItemID = ? AND u.id = b.UserID;";
+              "FROM Bids b, Users u WHERE b.ItemID = ? AND u.id = b.UserID " +
+              "ORDER BY b.Amount;";
       ps = conn.prepareStatement(query);
       ps.setInt(1, Integer.parseInt(itemId));
       rs = ps.executeQuery();
@@ -233,8 +228,6 @@ class User {
       xml += "\t<Bids />\n";
     } else {
       xml += "\t<Bids>\n";
-      // NOTE(JL): Do we need to output these in ascending order by bid amount?
-      // Techincally we don't have to and we will still adhere to the DTD
       for (Bid b : bids) {
         xml += "\t\t<Bid>\n";
         xml += "\t\t\t<Bidder Rating=\"" + Integer.toString(b.BidderRating) + "\" UserID=\"" + b.UserID + "\">\n";
@@ -259,8 +252,8 @@ class User {
     } catch (Exception e) {
       return "Failed to parse Time";
     }
-    xml += "<Seller Rating=\"" + SellerRating + "\" UserID=\"" + item.SellerID + "\" />\n";
-    xml += "<Description>" + item.Description + "</Description>\n";
+    xml += "\t<Seller Rating=\"" + SellerRating + "\" UserID=\"" + item.SellerID + "\" />\n";
+    xml += "\t<Description>" + item.Description + "</Description>\n";
     xml += "</Item>";
 
     return xml;
