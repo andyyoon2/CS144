@@ -47,9 +47,9 @@ cd ${TMP_DIR}
 for FILE in ${REQUIRED_FILES}
 do
     if [ ! -f ${FILE} ]; then
-  echo "ERROR: Cannot find ${FILE} in the root folder of ${ZIP_FILE}" 1>&2
-  rm -rf ${TMP_DIR}
-  exit 1
+	echo "ERROR: Cannot find ${FILE} in the root folder of ${ZIP_FILE}" 1>&2
+	rm -rf ${TMP_DIR}
+	exit 1
     fi
 done
 JAVA_FILES=`find src -name '*.java' -print`
