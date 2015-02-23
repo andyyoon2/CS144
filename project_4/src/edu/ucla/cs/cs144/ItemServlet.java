@@ -7,12 +7,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.ucla.cs.cs144.AuctionSearchClient;
+
 public class ItemServlet extends HttpServlet implements Servlet {
-       
+
     public ItemServlet() {}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        // your codes here
+      String id = request.getParameter("id");
+      String item = AuctionSearchClient.getXMLDataForItemId(id);
+
+      request.setAttribute("id", id);
+      request.setAttribute("result", item);
+      request.getRequestDispatcher("/itemId.jsp").forward(request, response);
     }
 }
