@@ -19,7 +19,7 @@ public class ItemServlet extends HttpServlet implements Servlet {
       String item = AuctionSearchClient.getXMLDataForItemId(id);
 
       request.setAttribute("id", id);
-      request.setAttribute("result", item);
+      request.setAttribute("result", item.replace("'", "\\'").replaceAll("[\n\r]", "").replaceAll("\t", ""));
       request.getRequestDispatcher("/itemId.jsp").forward(request, response);
     }
 }
