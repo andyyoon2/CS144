@@ -154,7 +154,7 @@ class Bid {
         item.Buy_Price = rs.getDouble("Buy_Price");
         item.First_Bid = rs.getDouble("First_Bid");
         item.Number_of_Bids = rs.getInt("Number_of_Bids");
-        item.Location = rs.getString("Name");
+        item.Location = rs.getString("Location");
         item.Latitude = rs.getDouble("Latitude");
         item.Longitude = rs.getDouble("Longitude");
         item.Country = rs.getString("Country");
