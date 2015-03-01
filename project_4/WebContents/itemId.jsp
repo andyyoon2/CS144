@@ -1,15 +1,21 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Item ID Loopup: <%= request.getAttribute("id") %></title>
+    <title>Item ID Lookup: <%= request.getAttribute("id") %></title>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUOAPIKsWsv9GpCCdiW-leH6L0HyR-FyY">
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
     <h1>eBay Item ID Lookup</h1>
     <form action="item" method="get">
       Item ID: <input type="text" name="id"><br>
       <input type="submit" value="Submit">
-    </form><br \><br \><br \>
+    </form>
+    <div id="canvas"></div>
+    <br \><br \><br \>
     Item ID Lookup: <%= request.getAttribute("id") %> <br /><br />
     <span id="main">
     Name: <span id="name"></span><br />
@@ -36,7 +42,12 @@
         xml_string = xml_string.replace(/\t/g, '');
         $xml = $(xml_string);
 
-        $("#name").text($xml.find("Name").text());
+        var name = $xml.find("Name").text(),
+            lat  = $xml.children("Location").attr("latitude"),
+            lon  = $xml.children("Location").attr("longitude"),
+            loc = $xml.children("Location").text();
+
+        $("#name").text(name);
         $("#seller_rating").text($xml.find("Seller").attr("rating"));
         $("#seller_id").text($xml.find("Seller").attr("userid"));
         $xml.find("Category").each(function(category){
@@ -44,10 +55,10 @@
             $("#categories").append(" | ");
           $("#categories").append(this);
         });
-        $("#latitude").text($xml.find("Location").attr("latitude"));
-        $("#longitude").text($xml.find("Location").attr("longitude"));
-        $("#location").text($xml.find("Location").text());
-        $("#country").text($xml.find("Country").text());
+        $("#latitude").text(lat);
+        $("#longitude").text(lon);
+        $("#location").text(loc);
+        $("#country").text($xml.children("Country").text());
 
         $("#description").text($xml.find("Description").text());
 
@@ -90,6 +101,50 @@
         bid_html += "<br />";
         $("#bids").append(bid_html);
       });
+
+      function initialize() {
+        var zoom = 14,
+            has_location = true;
+        if (lat == 0 && lon == 0) {
+            zoom = 2;
+            has_location = false;
+        }
+        var latlng = new google.maps.LatLng(lat,lon); 
+        var myOptions = { 
+          zoom: zoom, // default is 8  
+          center: latlng, 
+          mapTypeId: google.maps.MapTypeId.ROADMAP 
+        }; 
+        var map = new google.maps.Map(document.getElementById("canvas"), 
+            myOptions); 
+
+        if (has_location) {
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: name,
+                animation: google.maps.Animation.DROP
+            });
+        } else {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode( {'address': loc},
+                function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                      map.setCenter(results[0].geometry.location);
+                      var marker = new google.maps.Marker({
+                          map: map,
+                          position: results[0].geometry.location,
+                          title: name,
+                          animation: google.maps.Animation.DROP
+                      });
+                    } else {
+                      alert('Geocode was not successful for the following reason: ' + status);
+                    }
+                }
+            );
+        }
+      } 
+      google.maps.event.addDomListener(window, 'load', initialize);
     }
     </script>
 </body>
