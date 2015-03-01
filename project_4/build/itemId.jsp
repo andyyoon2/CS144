@@ -103,15 +103,13 @@
       });
 
       function initialize() {
-        var zoom = 14,
-            has_location = true;
+        var has_location = true;
         if (lat == 0 && lon == 0) {
-            zoom = 2;
-            has_location = false;
+          has_location = false;
         }
         var latlng = new google.maps.LatLng(lat,lon); 
         var myOptions = { 
-          zoom: zoom, // default is 8  
+          zoom: 14, // default is 8  
           center: latlng, 
           mapTypeId: google.maps.MapTypeId.ROADMAP 
         }; 
@@ -137,8 +135,10 @@
                           title: name,
                           animation: google.maps.Animation.DROP
                       });
+                      map.setZoom(8);
                     } else {
-                      alert('Geocode was not successful for the following reason: ' + status);
+                      // No result, display world map
+                      map.setZoom(2);
                     }
                 }
             );
