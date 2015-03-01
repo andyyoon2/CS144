@@ -16,9 +16,21 @@ public class SearchServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
       String q = request.getParameter("q");
-      int numResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
-      int numResultsToReturn = Integer.parseInt(request.getParameter("numResultsToReturn"));
+      if(q == null)
+        q = "";
 
+      int numResultsToSkip = 0;
+      int numResultsToReturn = 0;
+      try {
+        numResultsToSkip = Integer.parseInt(request.getParameter("numResultsToSkip"));
+        numResultsToReturn = Integer.parseInt(request.getParameter("numResultsToReturn"));
+      } catch (NumberFormatException e){
+        numResultsToReturn = 0;
+        numResultsToSkip = 0;
+      } catch (NullPointerException e){
+        numResultsToReturn = 0;
+        numResultsToSkip = 0;
+      }
       SearchResult[] basicResults = AuctionSearchClient.basicSearch(q, numResultsToSkip, numResultsToReturn);
 
       request.setAttribute("query", q);

@@ -14,7 +14,6 @@
       Item ID: <input type="text" name="id"><br>
       <input type="submit" value="Submit">
     </form>
-    <div id="canvas"></div>
     <br \><br \><br \>
     Item ID Lookup: <%= request.getAttribute("id") %> <br /><br />
     <span id="main">
@@ -22,7 +21,9 @@
     Seller (Rating:<span id="seller_rating"></span>): <span id="seller_id"></span><br />
     Categories: <span id="categories"></span><br />
     Location (Lat: <span id="latitude"></span> Lon: <span id="longitude"></span>): <span id="location"></span><br />
-    Country: <span id="country"></span><br /><br /><br />
+    Country: <span id="country"></span><br /><br />
+
+    <div id="canvas" style="height:600;width:600;"></div> <br /><br /><br />
 
     Description: <span id="description"></span><br /><br /><br />
 
@@ -31,7 +32,7 @@
     Current Price: <span id="currently"></span><br />
     First Bid: <span id="first_bid"></span><br />
     # of Bids: <span id="number_of_bids"></span><br />
-    Bids: <span id="bids"></span><br />
+    <span id="bids_label">Bids: <span id="bids"></span><br /></span>
     </span>
     <script>
       var xml_string = '<?xml version="1.0" encoding="utf-8"?><%= request.getAttribute("result") %>';
@@ -85,6 +86,9 @@
       }
       bids = bids.sort(sort_time);
 
+      if(bids.length == 0)
+        $("#bids_label").hide();
+
       $.each(bids, function(_, bid) {
         var bid_html = "<div style='margin-left:20px;'>";
         bid_html += "Bidder (Rating: " + bid.bidder_rating + "): " + bid.bidder_id;
@@ -107,14 +111,14 @@
         if (lat == 0 && lon == 0) {
           has_location = false;
         }
-        var latlng = new google.maps.LatLng(lat,lon); 
-        var myOptions = { 
-          zoom: 14, // default is 8  
-          center: latlng, 
-          mapTypeId: google.maps.MapTypeId.ROADMAP 
-        }; 
-        var map = new google.maps.Map(document.getElementById("canvas"), 
-            myOptions); 
+        var latlng = new google.maps.LatLng(lat,lon);
+        var myOptions = {
+          zoom: 9, // default is 8
+          center: latlng,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("canvas"),
+            myOptions);
 
         if (has_location) {
             var marker = new google.maps.Marker({
@@ -143,7 +147,7 @@
                 }
             );
         }
-      } 
+      }
       google.maps.event.addDomListener(window, 'load', initialize);
     }
     </script>

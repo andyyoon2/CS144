@@ -16,7 +16,11 @@ public class ItemServlet extends HttpServlet implements Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
       String id = request.getParameter("id");
+      if(id == null)
+        id = "Empty";
       String item = AuctionSearchClient.getXMLDataForItemId(id);
+      if(item == null)
+        item = "";
 
       request.setAttribute("id", id);
       request.setAttribute("result", item.replace("'", "\\'").replaceAll("[\n\r]", "").replaceAll("\t", ""));
