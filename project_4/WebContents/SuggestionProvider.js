@@ -5,7 +5,7 @@
 
 function SuggestionProvider() {}
 
-SuggestionProvider.prototype.requestSuggestions = function (oAutoSuggestControl) {
+SuggestionProvider.prototype.requestSuggestions = function (oAutoSuggestControl, bTypeAhead) {
   var aSuggestions = [];
   var sTextboxValue = oAutoSuggestControl.textbox.value;
   var url = "/eBay/suggest?q=" + sTextboxValue;
@@ -25,7 +25,7 @@ SuggestionProvider.prototype.requestSuggestions = function (oAutoSuggestControl)
           aSuggestions.push(results[i]);
         }
       }
-      oAutoSuggestControl.autosuggest(aSuggestions);
+      oAutoSuggestControl.autosuggest(aSuggestions, bTypeAhead);
     }
   })
     .fail(function (data) {

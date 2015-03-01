@@ -10,6 +10,7 @@
         var oTextbox = new AutoSuggestControl(document.getElementById("autosuggest"), new SuggestionProvider());
       }
     </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
       <h1>eBay Keyword Search</h1>
