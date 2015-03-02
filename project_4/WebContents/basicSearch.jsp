@@ -2,11 +2,20 @@
 <html>
 <head>
     <title>Basic Search (skip: <%= request.getAttribute("skip") %>, return: <%= request.getAttribute("return") %>): <%= request.getAttribute("query") %></title>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="AutoSuggestControl.js"></script>
+    <script src="SuggestionProvider.js"></script>
+    <script>
+      window.onload = function () {
+        var oTextbox = new AutoSuggestControl(document.getElementById("autosuggest"), new SuggestionProvider());
+      }
+    </script>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
       <h1>eBay Keyword Search</h1>
       <form action="search" method="get">
-        Keywords: <input type="text" name="q"><br />
+        Keywords: <input id="autosuggest" type="text" name="q"><br />
         <input type="hidden" name="numResultsToSkip" value="0">
         # of Results to return: <select name="numResultsToReturn">
                                 <option value="10">10</option>
