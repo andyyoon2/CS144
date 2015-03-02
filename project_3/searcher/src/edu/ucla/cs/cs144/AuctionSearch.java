@@ -213,7 +213,7 @@ class Bid {
     SimpleDateFormat date_format = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
 
     // Populate the XML
-		String xml = "<Item ItemID=\"" + Integer.toString(item.id) + "\">\n";
+		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><Item ItemID=\"" + Integer.toString(item.id) + "\">\n";
     xml += "\t<Name>" + item.Name + "</Name>\n";
     for (String c : categories) {
       xml += "\t<Category>" + c + "</Category>\n";

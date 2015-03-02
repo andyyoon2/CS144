@@ -1,42 +1,58 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Item ID Lookup: <%= request.getAttribute("id") %></title>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUOAPIKsWsv9GpCCdiW-leH6L0HyR-FyY">
-    </script>
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+<title>eBay Item ID Lookup: <%= request.getAttribute("id") %></title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link href="reset.css" rel="stylesheet" type="text/css" />
+<link href="style.css" rel="stylesheet" type="text/css" />
+<link href="styles.css" rel="stylesheet" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css' />
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUOAPIKsWsv9GpCCdiW-leH6L0HyR-FyY">
+</script>
 </head>
 <body>
-    <h1>eBay Item ID Lookup</h1>
-    <form action="item" method="get">
-      Item ID: <input type="text" name="id"><br>
-      <input type="submit" value="Submit">
-    </form>
-    <br \><br \><br \>
-    Item ID Lookup: <%= request.getAttribute("id") %> <br /><br />
+<div id="fb-root"></div>
+<div id="wrapper">
+  <!-- Header -->
+  <div id="header">
+    <h5><a href="keywordSearch.html">Search</a> | <a href="getItem.html">Item Lookup</a></h5>
+    <img class="logo" alt="" src="img/logo.png" /> </div>
+  <!-- end -->
+  <div id="content">
+    <!-- Any product info -->
+    <div class="info">
+      <h2>Item ID Lookup</h2>
+      <p>
+      <form action="item" method="get">
+        Item ID: <input type="text" name="id"><br \ >
+        <input type="submit" value="Submit">
+      </form>
+      <br \><br \><br \>
+    <b>Item ID Lookup:</b> <%= request.getAttribute("id") %> <br /><br />
     <span id="main">
-    Name: <span id="name"></span><br />
-    Seller (Rating:<span id="seller_rating"></span>): <span id="seller_id"></span><br />
-    Categories: <span id="categories"></span><br />
-    Location (Lat: <span id="latitude"></span> Lon: <span id="longitude"></span>): <span id="location"></span><br />
-    Country: <span id="country"></span><br /><br />
+    <b>Name:</b> <span id="name"></span><br /><br />
+    <b>Seller (Rating:<span id="seller_rating"></span>):</b> <span id="seller_id"></span><br /><br />
+    <b>Categories:</b> <span id="categories"></span><br /><br />
+    <b>Location (Lat: <span id="latitude"></span> Lon: <span id="longitude"></span>):</b> <span id="location"></span><br /><br />
+    <b>Country:</b> <span id="country"></span><br /><br /><br />
 
-    <div id="canvas" style="height:600;width:600;"></div> <br /><br /><br />
+    <div id="canvas" style="height:400px;width:400px;"></div> <br /><br /><br />
 
-    Description: <span id="description"></span><br /><br /><br />
+    <b>Description:</b> <span id="description"></span><br /><br /><br />
 
-    Started: <span id="started"></span><br />
-    Ends: <span id="ends"></span><br />
-    Current Price: <span id="currently"></span><br />
-    First Bid: <span id="first_bid"></span><br />
-    # of Bids: <span id="number_of_bids"></span><br />
-    <span id="bids_label">Bids: <span id="bids"></span><br /></span>
+    <b>Started:</b> <span id="started"></span><br /><br />
+    <b>Ends:</b> <span id="ends"></span><br /><br />
+    <b>Current Price:</b> <span id="currently"></span><br /><br />
+    <b>First Bid:</b> <span id="first_bid"></span><br /><br />
+    <b># of Bids:</b> <span id="number_of_bids"></span><br /><br />
+    <span id="bids_label"><b>Bids:</b> <span id="bids"></span><br /></span>
     </span>
     <script>
-      var xml_string = '<?xml version="1.0" encoding="utf-8"?><%= request.getAttribute("result") %>';
-      if(xml_string == '<?xml version="1.0" encoding="utf-8"?>'){
+      var xml_string = '<%= request.getAttribute("result") %>';
+      if(xml_string.indexOf('Item') == -1){
         $("#main").text("Not Found");
       }
       else{
@@ -151,5 +167,19 @@
       google.maps.event.addDomListener(window, 'load', initialize);
     }
     </script>
+      </p>
+    </div>
+    <!-- end -->
+
+  </div>
+
+</div>
+<!-- License info -->
+<div id="license">
+  <div class="lic_text"> CS144 Project 4 | Team: Last Minute | By: Andy Yoon & Jiexi Luan</div>
+</div>
+<!-- end -->
 </body>
 </html>
+
+

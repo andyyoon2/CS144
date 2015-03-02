@@ -21,7 +21,7 @@ AutoSuggestControl.prototype.createDropDown = function () {
 
   var oThis = this;
 
-  this.layer.onmousedown = this.layer.onmouseup = 
+  this.layer.onmousedown = this.layer.onmouseup =
   this.layer.onmouseover = function (oEvent) {
     oEvent = oEvent || window.event;
     oTarget = oEvent.target || oEvent.srcElement;
@@ -44,7 +44,7 @@ AutoSuggestControl.prototype.getLeft = function () {
 
   while(oNode.tagName != "BODY") {
     iLeft += oNode.offsetLeft;
-    oNode = oNode.offsetParent; 
+    oNode = oNode.offsetParent;
   }
 
   return iLeft;
@@ -56,7 +56,7 @@ AutoSuggestControl.prototype.getTop = function () {
 
   while(oNode.tagName != "BODY") {
     iTop += oNode.offsetTop;
-    oNode = oNode.offsetParent; 
+    oNode = oNode.offsetParent;
   }
 
   return iTop;
@@ -99,7 +99,7 @@ AutoSuggestControl.prototype.nextSuggestion = function () {
   if (cSuggestionNodes.length > 0 && this.cur < cSuggestionNodes.length-1) {
     var oNode = cSuggestionNodes[++this.cur];
     this.highlightSuggestion(oNode);
-    this.textbox.value = oNode.firstChild.nodeValue; 
+    this.textbox.value = oNode.firstChild.nodeValue;
   }
 };
 
@@ -109,7 +109,7 @@ AutoSuggestControl.prototype.previousSuggestion = function () {
   if (cSuggestionNodes.length > 0 && this.cur > 0) {
     var oNode = cSuggestionNodes[--this.cur];
     this.highlightSuggestion(oNode);
-    this.textbox.value = oNode.firstChild.nodeValue; 
+    this.textbox.value = oNode.firstChild.nodeValue;
   }
 };
 
@@ -117,22 +117,22 @@ AutoSuggestControl.prototype.previousSuggestion = function () {
 AutoSuggestControl.prototype.selectRange = function (iStart, iLength) {
   if (this.textbox.createTextRange) {
     // IE
-    var oRange = this.textbox.createTextRange(); 
-    oRange.moveStart("character", iStart); 
-    oRange.moveEnd("character", iLength - this.textbox.value.length); 
+    var oRange = this.textbox.createTextRange();
+    oRange.moveStart("character", iStart);
+    oRange.moveEnd("character", iLength - this.textbox.value.length);
     oRange.select();
   } else if (this.textbox.setSelectionRange) {
     // Firefox
     this.textbox.setSelectionRange(iStart, iLength);
   }
 
-  this.textbox.focus(); 
+  this.textbox.focus();
 };
 
 AutoSuggestControl.prototype.typeAhead = function (sSuggestion) {
   if (this.textbox.createTextRange || this.textbox.setSelectionRange) {
-    var iLen = this.textbox.value.length; 
-    this.textbox.value = sSuggestion; 
+    var iLen = this.textbox.value.length;
+    this.textbox.value = sSuggestion;
     this.selectRange(iLen, sSuggestion.length);
   }
 };
@@ -156,7 +156,7 @@ AutoSuggestControl.prototype.handleKeyDown = function (oEvent) {
     case 38: //up arrow
       this.previousSuggestion();
       break;
-    case 40: //down arrow 
+    case 40: //down arrow
       this.nextSuggestion();
       break;
     case 13: //enter
@@ -173,7 +173,7 @@ AutoSuggestControl.prototype.handleKeyUp = function (oEvent) {
   } else if (iKeyCode < 32 || (iKeyCode >= 33 && iKeyCode <= 46) || (iKeyCode >= 112 && iKeyCode <= 123)) {
     //ignore
   } else {
-    this.provider.requestSuggestions(this, true);
+    this.provider.requestSuggestions(this, false);
   }
 };
 
@@ -191,7 +191,7 @@ AutoSuggestControl.prototype.init = function () {
   this.textbox.onkeydown = function (oEvent) {
     if (!oEvent) {
       oEvent = window.event;
-    } 
+    }
     oThis.handleKeyDown(oEvent);
   };
 

@@ -11,14 +11,14 @@ import edu.ucla.cs.cs144.SearchRegion;
 import edu.ucla.cs.cs144.SearchResult;
 
 public class AuctionSearchClient {
-	
+
 	private static final String ENDPOINT_URL =
 		"http://localhost:8080/axis2/services/AuctionSearchService";
 	private static final String TARGET_NAMESPACE =
 		"http://cs144.cs.ucla.edu";
-	
+
 	@SuppressWarnings("unused")
-	public static SearchResult[] basicSearch(String query, int numResultsToSkip, 
+	public static SearchResult[] basicSearch(String query, int numResultsToSkip,
 			int numResultsToReturn) {
 		try {
 			RPCServiceClient rpcClient = new RPCServiceClient();
@@ -36,9 +36,9 @@ public class AuctionSearchClient {
 		}
 		return new SearchResult[0];
 	}
-	
+
 	@SuppressWarnings("unused")
-	public static SearchResult[] spatialSearch(String query, SearchRegion region, 
+	public static SearchResult[] spatialSearch(String query, SearchRegion region,
 			int numResultsToSkip, int numResultsToReturn) {
 		try {
 			RPCServiceClient rpcClient = new RPCServiceClient();
@@ -56,7 +56,7 @@ public class AuctionSearchClient {
 		}
 		return new SearchResult[0];
 	}
-	
+
 	@SuppressWarnings("unused")
 	public static String getXMLDataForItemId(String itemId) {
 		try {
@@ -74,7 +74,7 @@ public class AuctionSearchClient {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unused")
 	public static String echo(String message) {
 		try {
