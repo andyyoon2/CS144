@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.ucla.cs.cs144.AuctionSearchClient;
 
@@ -22,8 +23,17 @@ public class ItemServlet extends HttpServlet implements Servlet {
       if(item == null)
         item = "";
 
+      // Clean string
+      item = item.replace("'", "\\'").replaceAll("[\n\r]", "").replaceAll("\t", "");
+
+      // Set HttpSession attributes
+      HttpSession session = request.getSession(true);
+      session.setAttribute("referringPage", request.getHeader("Referer"));
+      session.setAttribute("item", item);
+      session.setAttribute("id", id);
+
       request.setAttribute("id", id);
-      request.setAttribute("result", item.replace("'", "\\'").replaceAll("[\n\r]", "").replaceAll("\t", ""));
+      request.setAttribute("result", item);
       request.getRequestDispatcher("/itemId.jsp").forward(request, response);
     }
 }

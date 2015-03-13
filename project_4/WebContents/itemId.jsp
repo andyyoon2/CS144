@@ -45,6 +45,10 @@
 
     <b>Started:</b> <span id="started"></span><br /><br />
     <b>Ends:</b> <span id="ends"></span><br /><br />
+    <div id="buy_price_container">
+      <b>Buy Price:</b> <span id="buy_price"></span>
+      <a id="buy_now" href="/eBay/purchase">Buy Now!</a><br /><br />
+    </div>
     <b>Current Price:</b> <span id="currently"></span><br /><br />
     <b>First Bid:</b> <span id="first_bid"></span><br /><br />
     <b># of Bids:</b> <span id="number_of_bids"></span><br /><br />
@@ -81,6 +85,10 @@
 
         $("#started").text($xml.find("Started").text());
         $("#ends").text($xml.find("Ends").text());
+        $("#buy_price").text($xml.find("Buy_price").text());
+        if ($("#buy_price").is(':empty')) {
+          $("#buy_price_container").css("display", "none");
+        }
         $("#currently").text($xml.find("Currently").text());
         $("#first_bid").text($xml.find("First_Bid").text());
         $("#number_of_bids").text($xml.find("Number_of_Bids").text());

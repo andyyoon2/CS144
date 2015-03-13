@@ -19,3 +19,13 @@ div.suggestions div.current {
     background-color: #3366cc;
     color: white;
 }
+
+#buy_now {
+  background-color: #ff6600;
+  color: white;
+  padding: 10px 40px;
+  margin-left: 20px;
+  display: inline-block;
+  border-radius: 4px;
+  text-decoration: none;
+}
