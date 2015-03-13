@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>eBay Item Confirmation: <%= request.getAttribute("id") %></title>
+<title>Error Redirect</title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <link href="reset.css" rel="stylesheet" type="text/css" />
 <link href="style.css" rel="stylesheet" type="text/css" />
@@ -21,15 +21,9 @@
   <div id="content">
     <!-- Any product info -->
     <div class="info">
-      <h2>Purchase Confirmation</h2>
+      <h2>Problem with your Purchase</h2>
       <p>
-        <form>
-            <b>ItemID:</b> <span id="itemId"><%= request.getAttribute("id") %></span><br /><br />
-            <b>Item Name:</b> <span id="name"></span><br /><br />
-            <b>Buy Price:</b> <span id="buy_price"></span><br /><br />
-            <b>Credit Card Number:</b> <span><%= request.getAttribute("card") %></span><br /><br />
-            <b>Time of Purchase:</b> <span><%= request.getAttribute("time") %></span><br />
-        </form>
+        Please make sure your cookies are enabled, that your browser supports ssl/https, and <a href="javascript:history.back()">try again</a>.
       </p>
     </div>
     <!-- end -->
@@ -41,18 +35,5 @@
   <div class="lic_text"> CS144 Project 4 | Team: Last Minute | By: Andy Yoon & Jiexi Luan</div>
 </div>
 <!-- end -->
-<script>
-  var xml_string = '<%= request.getAttribute("result") %>';
-  console.log(xml_string);
-  if(xml_string.indexOf('Item') == -1){
-    $("#main").text("Not Found");
-  } else {
-    xml_string = xml_string.replace(/\t/g, '');
-    $xml = $(xml_string);
-
-    $("#name").text($xml.find("Name").text());
-    $("#buy_price").text($xml.find("Buy_price").text());
-  }
-</script>
 </body>
 </html>

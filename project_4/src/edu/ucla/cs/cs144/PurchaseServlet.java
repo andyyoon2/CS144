@@ -16,12 +16,14 @@ public class PurchaseServlet extends HttpServlet implements Servlet {
     {
       HttpSession session = request.getSession(true);
       if (session.isNew()) {
-        throw new ServletException("No session info for purchase");
+        request.getRequestDispatcher("/redirect.jsp").forward(request, response);
+        return;
       }
       String item = (String)session.getAttribute("item");
       if (item == null)
         item = "";
       String id = (String)session.getAttribute("id");
+
 
       request.setAttribute("id", id);
       request.setAttribute("result", item);
